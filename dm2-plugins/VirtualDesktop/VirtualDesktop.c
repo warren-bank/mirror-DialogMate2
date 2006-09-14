@@ -221,7 +221,7 @@ BOOL APIENTRY DllMain( HANDLE hModule, DWORD  ul_reason_for_call, LPVOID lpReser
 
 void ShowAbout(HWND hwnd_dm2)
 {
-	MessageBox(hwnd_dm2, "VirtualDesktop plugins v0.02\r--enable you have 2~8 virtual deaktop and switch it easy.\r\rcode by flyfancy. 2005.09.13", "About",
+	MessageBox(hwnd_dm2, "VirtualDesktop plugins v0.03\r--enable you have 2~8 virtual deaktop and switch it easy.\r\rcode by flyfancy. 2006.08.15", "About",
 		MB_OK|MB_ICONINFORMATION);
 }
 
@@ -230,9 +230,26 @@ void ExecPlugins(HWND hwnd_dm2, char **argv, int argc, BOOL bUnNeed)
 {
 	if(VDOpt->bEnable)
 	{
-		//Do switch virtual desktop.
-		if(++CVD == VDOpt->VDCount)
-			CVD = 0;
+		if(argc == 1)
+		{
+			int a = atoi(argv[0]);
+			//skip param error
+			if((a <= VDOpt->VDCount) && (a > 0) && (--a != CVD))
+				CVD = a;
+			else
+				return;
+		}
+		else if(argc == 0)
+		{
+			//do switch virtual desktop.
+			if(++CVD == VDOpt->VDCount)
+				CVD = 0;
+		}
+		else
+		{
+			//if param more...
+			return;
+		}
 
 		SwitchVD();
 	}
@@ -263,7 +280,7 @@ void NeedConfig(HWND hwnd_dm2, char *szini)
 //	return TRUE;
 //}
 
-static char *ver = "VirtualDesktop v0.02";
+static char *ver = "VirtualDesktop v0.03";
 static char *cmd = "dm2_ext_cmd_virtualdesktop";
 static char *cmdcmt = "Switch Virtual Desktop (Plugins)";
 
