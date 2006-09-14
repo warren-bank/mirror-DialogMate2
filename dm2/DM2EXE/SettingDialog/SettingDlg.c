@@ -63,6 +63,19 @@ INT_PTR CALLBACK SettingDlgProc(HWND hwndDlg, UINT uMsg,
 
 		lstrcpy(szLang_temp, lang_file);
 
+		//fix autorun option register write bugs.
+		{
+			HKEY hKey;
+			DWORD dwType = REG_SZ;
+			if(Adv_data.startmode)
+				RegOpenKey(HKEY_CURRENT_USER, "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", &hKey);
+			else
+				RegOpenKey(HKEY_LOCAL_MACHINE, "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", &hKey);
+			Adv_data.isAutorun = (RegQueryValueEx(hKey, szAutoRun, 0, &dwType
+				, NULL, NULL) == ERROR_SUCCESS);
+			RegCloseKey(hKey);
+		}
+
 		//Copy Settings data
 		memcpy(&Gen_data_temp, &Gen_data, sizeof(SGEN_DATA));
 		memcpy(&adv_data_temp, &Adv_data, sizeof(SADV_DATA));
@@ -237,7 +250,7 @@ INT_PTR CALLBACK SettingDlgProc(HWND hwndDlg, UINT uMsg,
 			hk_data_temp = 0;
 
 			{
-				HKEY hKey;
+				HKEY hKey = NULL;
 
 				//delete autorun first.
 				if(RegOpenKey(HKEY_CURRENT_USER, 
@@ -260,8 +273,7 @@ INT_PTR CALLBACK SettingDlgProc(HWND hwndDlg, UINT uMsg,
 						RegOpenKey(HKEY_CURRENT_USER, "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", &hKey);
 					else
 						RegOpenKey(HKEY_LOCAL_MACHINE, "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", &hKey);
-					RegSetValueEx(hKey, szAutoRun, 0, REG_SZ, szExe, 
-						GetModuleFileName(NULL, szExe, MAX_PATH));
+					RegSetValueEx(hKey, szAutoRun, 0, REG_SZ, szExe, GetModuleFileName(NULL, szExe, MAX_PATH));
 					RegCloseKey(hKey);
 				}
 			}

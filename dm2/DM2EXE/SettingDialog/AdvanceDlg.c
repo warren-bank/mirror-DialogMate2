@@ -24,8 +24,6 @@ INT_PTR CALLBACK SettingDlgAdvanceProc(HWND hwndDlg, UINT uMsg,
 	case WM_INITDIALOG:
 		{
 			HWND htemp;
-			HKEY hKey;
-			DWORD dwType = REG_SZ;
 			char szBuf[MAX_PATH];
 			//init control
 			CheckDlgButton(hwndDlg, IDC_CHK_MSM, adv_data_temp.sysmenu);
@@ -39,14 +37,6 @@ INT_PTR CALLBACK SettingDlgAdvanceProc(HWND hwndDlg, UINT uMsg,
 			LoadLanguageString(lang_file, DlgAdvSection, 101, szBuf, MAX_PATH);
 			SendMessage(htemp, CB_ADDSTRING, 0, (LPARAM)szBuf);
 			SendMessage(htemp, CB_SETCURSEL, adv_data_temp.startmode, 0);
-			//is auto run?
-			if(adv_data_temp.startmode)
-				RegOpenKey(HKEY_CURRENT_USER, "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", &hKey);
-			else
-				RegOpenKey(HKEY_LOCAL_MACHINE, "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", &hKey);
-			adv_data_temp.isAutorun = (RegQueryValueEx(hKey, szAutoRun, 0, &dwType
-				, NULL, NULL) == ERROR_SUCCESS);
-			RegCloseKey(hKey);
 			CheckDlgButton(hwndDlg, IDC_CHK_RUN, adv_data_temp.isAutorun);
 			EnableWindow(htemp, adv_data_temp.isAutorun);
 			if(adv_data_temp.dwHotKey)
