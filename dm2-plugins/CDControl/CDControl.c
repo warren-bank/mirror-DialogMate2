@@ -8,7 +8,7 @@
 #pragma comment(linker, "/IGNORE:4078 /IGNORE:4089")
 #pragma comment(linker, "/RELEASE")
 #pragma comment(linker, "/merge:.rdata=.data")
-//#pragma comment(linker, "/merge:.text=.data")
+#pragma comment(linker, "/merge:.text=.data")
 #pragma comment(linker, "/merge:.reloc=.data")
 #if _MSC_VER >= 1000
 #pragma comment(linker, "/FILEALIGN:0x200")
@@ -27,7 +27,7 @@
 #define CD_DRIVE_OPEN	1
 #define CD_DRIVE_CLOSE	2
 
-static char *ver = "CDControl v0.03 beta";
+static char *ver = "CDControl v0.04";
 static char *cmd = "dm2_ext_cmd_cdcontrol";
 static char *cmdcmt = "CD-ROM Control (Plugins)";
 
@@ -98,9 +98,9 @@ void CD_OpenCloseAllDrives(int OpenDrives)
 	lstrcpy(szDrive, "?:\\");
 
     while (TRUE) {
-        if (dwDriveList & 1) 
+		szDrive[0] = 'c'+n;
+        if (szDrive[0] <= 'z') 
 		{
-			szDrive[0] = 'a' + n;
 			if(GetDriveType(szDrive) == DRIVE_CDROM)
 				CD_OpenCloseDrive(OpenDrives, szDrive[0]);
 		}
@@ -170,7 +170,7 @@ BOOL APIENTRY DllMain( HANDLE hModule, DWORD  ul_reason_for_call, LPVOID lpReser
 
 void ShowAbout(HWND hwnd_dm2)
 {
-	MessageBox(hwnd_dm2, "CDControl plugins v0.03 beta\r--help you Control CD-ROM.\r\rCode by flyfancy. 2005", "About",
+	MessageBox(hwnd_dm2, "CDControl plugins v0.04\r--help you Control CD-ROM.\r\rCode by flyfancy. 2007.3", "About",
 		MB_OK|MB_ICONINFORMATION);
 }
 
@@ -205,10 +205,12 @@ void ExecPlugins(HWND hwnd_dm2, char **argv, int argc, BOOL bUnNeed)
 		cDrive = 0;
 	else
 	{
-		DWORD dwDriveList = GetLogicalDrives();
+		//this api have a error can't get all driver some time
+		//DWORD dwDriveList = GetLogicalDrives();
 		nLen = lstrlen(pDrv);
+		CharLower(pDrv);
 		if(nLen>2) return;
-		if(nLen == 2 && pDrv[1] != ';') return;
+		if(nLen == 2 && pDrv[1] != ':') return;
 		if(isdigit(pDrv[0]))
 		{
 			char szRoot[4];
@@ -218,9 +220,9 @@ void ExecPlugins(HWND hwnd_dm2, char **argv, int argc, BOOL bUnNeed)
 			lstrcpy(szRoot, "?:\\");
 			while(TRUE)
 			{
-				if (dwDriveList & 1) 
+				szRoot[0] = 'c'+n;
+				if (szRoot[0] <= 'z') 
 				{
-					szRoot[0] = 'a'+n;
 					if(GetDriveType(szRoot) == DRIVE_CDROM)
 						j++;
 					if(j == i)
@@ -229,11 +231,10 @@ void ExecPlugins(HWND hwnd_dm2, char **argv, int argc, BOOL bUnNeed)
 						break;
 					}
 				}
-				dwDriveList >>= 1;
 				n++;
 			}
 		}
-		else if((cDrive <= 'c') || (cDrive > 'z')) return;
+		else if((pDrv[0] <= 'c') || (pDrv[0] > 'z')) return;
 		else cDrive = pDrv[0];
 	}
 
@@ -242,6 +243,8 @@ void ExecPlugins(HWND hwnd_dm2, char **argv, int argc, BOOL bUnNeed)
 		CD_OpenCloseAllDrives(nOpenClose);
 	else
 		CD_OpenCloseDrive(nOpenClose, cDrive);
+
+
 }
 
 char *pIni;
