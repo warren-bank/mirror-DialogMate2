@@ -1043,7 +1043,7 @@ INT_PTR CALLBACK EditFavMenuItemProc(HWND hwndDlg, UINT uMsg,
 					//#define BIF_NEWDIALOGSTYLE 64
 					//#define BIF_UAHINT 256
 					bi.ulFlags = BIF_DONTGOBELOWDOMAIN | 64 | BIF_RETURNONLYFSDIRS | 256 | BIF_EDITBOX;
-					bi.lpfn = BrowseFolderCallbackProc;
+					bi.lpfn = (BFFCALLBACK)BrowseFolderCallbackProc;
 					GetDlgItemText(hwndDlg, IDC_EDIT_PATH, szOldPath, MAX_PATH);
 					bi.lParam = (LPARAM)szOldPath;
 					SHGetPathFromIDList(SHBrowseForFolder(&bi), szPath);

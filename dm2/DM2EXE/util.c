@@ -256,8 +256,11 @@ DWORD ConversionHotkey(DWORD dwHK)
 		else if(wHK & HOTKEYF_SHIFT)
 			wHK = (wHK & ~HOTKEYF_SHIFT) | MOD_SHIFT;
 	}
-	//if(wHK & HOTKEYF_EXT)
-	//	wHK = (wHK & ~HOTKEYF_EXT);
+	if(wHK & HOTKEYF_EXT)
+		wHK = (wHK & ~HOTKEYF_EXT);
+	//if win key
+	if(wHK & (HOTKEYF_EXT << 1))
+		wHK = (wHK & ~(HOTKEYF_EXT << 1)) | HOTKEYF_EXT;
 	
 	return wHK;
 }

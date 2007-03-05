@@ -1,6 +1,10 @@
 History
 -------
 
+v1.23.1 [2007-03-05]
+! fix new hotkey patch bug. (register hot key error, example: shift+up)
+! correct a compiler warning.
+
 v1.23 [2007-03-05]
 + two patch. (thx Bamanzi#gmail.com)
  + hotkey can use windows key
