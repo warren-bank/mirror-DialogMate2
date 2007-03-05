@@ -190,6 +190,7 @@
 #define IDC_COMBO_CMIB                  1148
 #define IDC_COMBO_CMAB                  1149
 #define IDC_COMBO_CMCB                  1150
+#define IDC_HOTKEY_EXT                  1151
 #define ID_RESIZE_640480                40001
 #define ID_RESIZE_800600                40002
 #define ID_RESIZE_1024768               40003

@@ -97,8 +97,7 @@ void ControlVolume(BOOL bMix, int Flag, int vol, BOOL bMute)
 	if(bMix) mxl.dwComponentType = MIXERLINE_COMPONENTTYPE_DST_SPEAKERS;
 		else mxl.dwComponentType = MIXERLINE_COMPONENTTYPE_SRC_WAVEOUT;
 
-	if (mixerGetLineInfo((HMIXEROBJ)hMixer, &mxl, MIXER_OBJECTF_HMIXER 
-		| MIXER_GETLINEINFOF_COMPONENTTYPE) == MMSYSERR_NOERROR)
+	if (mixerGetLineInfo((HMIXEROBJ)hMixer, &mxl, MIXER_OBJECTF_HMIXER 	| MIXER_GETLINEINFOF_COMPONENTTYPE) == MMSYSERR_NOERROR)
 	{
 		mxlc.cbStruct = sizeof(MIXERLINECONTROLS);
 		mxlc.dwLineID = mxl.dwLineID;
@@ -109,8 +108,7 @@ void ControlVolume(BOOL bMix, int Flag, int vol, BOOL bMute)
 		mxlc.cControls = 1;
 		mxlc.cbmxctrl = sizeof(MIXERCONTROL);
 		mxlc.pamxctrl = &mxc;
-		if (mixerGetLineControls((HMIXEROBJ)hMixer, &mxlc, MIXER_OBJECTF_HMIXER | 
-			MIXER_GETLINECONTROLSF_ONEBYTYPE) == MMSYSERR_NOERROR)
+		if (mixerGetLineControls((HMIXEROBJ)hMixer, &mxlc, MIXER_OBJECTF_HMIXER | MIXER_GETLINECONTROLSF_ONEBYTYPE) == MMSYSERR_NOERROR)
 		{
 			iMixerControlID = mxc.dwControlID;
 			dwChannels = mxl.cChannels;
@@ -136,16 +134,18 @@ void ControlVolume(BOOL bMix, int Flag, int vol, BOOL bMute)
 					if(Flag == 0)
 						VarI4FromR4(0xFFFF*((float)vol/100), (LONG *)&(mxcd_u.dwValue));
 					else if(Flag == 1)
-						VarI4FromR4((float)mxcd_u.dwValue+0xFFFF*((float)vol/100), 
-						(LONG *)&(mxcd_u.dwValue));
-					else if(Flag == -1)
-						VarI4FromR4((float)mxcd_u.dwValue-0xFFFF*((float)vol/100), 
-						(LONG *)&(mxcd_u.dwValue));
+						VarI4FromR4((float)mxcd_u.dwValue+0xFFFF*((float)vol/100),(LONG *)&(mxcd_u.dwValue));
+					else if(Flag == -1){
+						if((float)mxcd_u.dwValue-0xFFFF*((float)vol/100) >= 0)	//additional checks before the assignment
+							VarI4FromR4((float)mxcd_u.dwValue-0xFFFF*((float)vol/100),(LONG *)&(mxcd_u.dwValue));
+						else	//otherwise mute
+							mxcd_u.dwValue = 0;
+					}
 
 					if(mxcd_u.dwValue > 0xFFFF)
 						mxcd_u.dwValue = 0xFFFF;
-					else if(mxcd_u.dwValue < 0)
-						mxcd_u.dwValue = 0;
+					/*else if(mxcd_u.dwValue < 0)		//Unsigned DWORD cannot go below zero
+						mxcd_u.dwValue = 0;*/
 				}
 				
 				mixerSetControlDetails((HMIXEROBJ)hMixer, &mxcd, 0);

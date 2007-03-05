@@ -272,6 +272,11 @@ void GetHotKeyText(DWORD Key)
 	BYTE byteKey = HIBYTE(Key);
 	char *pEnd = szHotKey;
 
+    if(byteKey & HOTKEYF_EXT)
+	{
+		pEnd = stradd(pEnd, "Win + ");
+		byteKey &= ~HOTKEYF_EXT;
+	}
 	if(byteKey & HOTKEYF_CONTROL)
 	{
 		pEnd = stradd(pEnd, "Ctrl + ");
@@ -288,8 +293,8 @@ void GetHotKeyText(DWORD Key)
 		byteKey &= ~HOTKEYF_ALT;
 	}
 	lkey = MapVirtualKey(LOBYTE(Key), 0)<<0x10;
-	if(byteKey & HOTKEYF_EXT)
-		lkey |= 0x1000000;
+	//if(byteKey & HOTKEYF_EXT)
+	//	lkey |= 0x1000000;
 	GetKeyNameText(lkey, 
 		&szHotKey[pEnd - szHotKey], 12);
 }
@@ -343,6 +348,11 @@ INT_PTR CALLBACK EditHKDataProc(HWND hwndDlg, UINT uMsg,
 				SendMessage(hCombo, CB_SETCURSEL, cmd_index, 0);
 				SendMessage(GetDlgItem(hwndDlg, IDC_HOTKEY_EDIT), 
 					HKM_SETHOTKEY, pLast_hk->dwKey, 0);
+				
+				if (pLast_hk->dwKey & HOTKEYF_EXT << 8)
+				    SendMessage(GetDlgItem(hwndDlg, IDC_HOTKEY_EXT),
+                                BM_SETCHECK, 1, 0);
+				
 				vi.mask = LVIF_TEXT;
 				vi.iSubItem = 2;
 				vi.pszText = szParam;
@@ -374,10 +384,18 @@ INT_PTR CALLBACK EditHKDataProc(HWND hwndDlg, UINT uMsg,
 					CB_GETCURSEL, 0, 0);
 				DWORD dwKey = SendMessage(GetDlgItem(hwndDlg, IDC_HOTKEY_EDIT), 
 					HKM_GETHOTKEY, 0, 0);
+				int check = SendMessage(GetDlgItem(hwndDlg, IDC_HOTKEY_EXT),
+				    BM_GETCHECK, 0, 0);					
 				int select = ListView_GetNextItem(hListView_hk, -1, LVNI_SELECTED);
+
 				//none key
 				if(dwKey == 0)
 					return FALSE;
+                if(check)
+                    dwKey = dwKey | HOTKEYF_EXT << 8;
+                if (0 == dwKey >> 8)   //no any modifier, this shouldn't be a hotkey?
+                    return FALSE;
+                
 				memset(&lv, 0, sizeof(lv));
 				lv.mask = LVIF_PARAM;
 				//if Key already exist!

@@ -824,6 +824,19 @@ BOOL CheckMenuItemString(char *String)
 	}
 	return TRUE;
 }
+
+static int CALLBACK BrowseFolderCallbackProc(HWND wnd, UINT uMsg,
+										  WPARAM wParam, LPARAM lParam)
+{
+    if (BFFM_INITIALIZED == uMsg)
+    {   
+        //restore the selection
+        char *szDir = (LPSTR)lParam;
+        SendMessage(wnd, BFFM_SETSELECTION, (WPARAM)TRUE, (LPARAM)szDir);              
+    }
+    return 0;
+}
+
 BOOL IsEditMenuItem = FALSE;
 char *MenuDlgFavSection = "SettingsDialogFavMenu";
 extern HWND hLastDlg;
@@ -1022,14 +1035,17 @@ INT_PTR CALLBACK EditFavMenuItemProc(HWND hwndDlg, UINT uMsg,
 				{
 					LPITEMIDLIST pidlRoot = NULL;
 					BROWSEINFO bi = {0};
+					char szOldPath[MAX_PATH];
+					memset(szOldPath, 0, MAX_PATH);
 					
 					bi.hwndOwner = hwndDlg;
 					bi.pidlRoot = pidlRoot;
 					//#define BIF_NEWDIALOGSTYLE 64
 					//#define BIF_UAHINT 256
-					bi.ulFlags = BIF_DONTGOBELOWDOMAIN | 64 | BIF_RETURNONLYFSDIRS | 256;
-					bi.lpfn = NULL;
-					bi.lParam = 0;
+					bi.ulFlags = BIF_DONTGOBELOWDOMAIN | 64 | BIF_RETURNONLYFSDIRS | 256 | BIF_EDITBOX;
+					bi.lpfn = BrowseFolderCallbackProc;
+					GetDlgItemText(hwndDlg, IDC_EDIT_PATH, szOldPath, MAX_PATH);
+					bi.lParam = (LPARAM)szOldPath;
 					SHGetPathFromIDList(SHBrowseForFolder(&bi), szPath);
 					if(*szPath != '\0')
 						SetDlgItemText(hwndDlg, IDC_EDIT_PATH, szPath);
