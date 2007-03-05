@@ -12,7 +12,7 @@ extern PSHK_DATA hk_data_temp;
 extern PSHK_DATA hk_data;
 extern SADV_DATA Adv_data;
 HANDLE hListView_hk;
-char szHotKey[33];		//MAX: "CTRL + ALT + SHIFT + Scroll Lock"
+char szHotKey[39];		//MAX: "WIN + CTRL + ALT + SHIFT + Scroll Lock"
 
 char *DlgHKSection = "SettingsDialogHotKey";
 extern HFONT hLocalFont;
@@ -272,10 +272,10 @@ void GetHotKeyText(DWORD Key)
 	BYTE byteKey = HIBYTE(Key);
 	char *pEnd = szHotKey;
 
-    if(byteKey & HOTKEYF_EXT)
+    if(byteKey & (HOTKEYF_EXT << 1))
 	{
 		pEnd = stradd(pEnd, "Win + ");
-		byteKey &= ~HOTKEYF_EXT;
+		byteKey &= ~(HOTKEYF_EXT << 1);
 	}
 	if(byteKey & HOTKEYF_CONTROL)
 	{
@@ -292,9 +292,10 @@ void GetHotKeyText(DWORD Key)
 		pEnd = stradd(pEnd, "Alt + ");
 		byteKey &= ~HOTKEYF_ALT;
 	}
+
 	lkey = MapVirtualKey(LOBYTE(Key), 0)<<0x10;
-	//if(byteKey & HOTKEYF_EXT)
-	//	lkey |= 0x1000000;
+	if(byteKey & HOTKEYF_EXT)
+		lkey |= 0x1000000;
 	GetKeyNameText(lkey, 
 		&szHotKey[pEnd - szHotKey], 12);
 }
@@ -349,7 +350,7 @@ INT_PTR CALLBACK EditHKDataProc(HWND hwndDlg, UINT uMsg,
 				SendMessage(GetDlgItem(hwndDlg, IDC_HOTKEY_EDIT), 
 					HKM_SETHOTKEY, pLast_hk->dwKey, 0);
 				
-				if (pLast_hk->dwKey & HOTKEYF_EXT << 8)
+				if (pLast_hk->dwKey & (HOTKEYF_EXT << 9))
 				    SendMessage(GetDlgItem(hwndDlg, IDC_HOTKEY_EXT),
                                 BM_SETCHECK, 1, 0);
 				
@@ -392,8 +393,8 @@ INT_PTR CALLBACK EditHKDataProc(HWND hwndDlg, UINT uMsg,
 				if(dwKey == 0)
 					return FALSE;
                 if(check)
-                    dwKey = dwKey | HOTKEYF_EXT << 8;
-                if (0 == dwKey >> 8)   //no any modifier, this shouldn't be a hotkey?
+					dwKey = dwKey | (HOTKEYF_EXT << 9);
+               if (0 == dwKey >> 8)   //no any modifier, this shouldn't be a hotkey?
                     return FALSE;
                 
 				memset(&lv, 0, sizeof(lv));
