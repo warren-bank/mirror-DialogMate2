@@ -1,6 +1,13 @@
 History
 -------
 
+v1.23 [2007-03-05]
++ two patch. (thx Bamanzi#gmail.com)
+ + hotkey can use windows key
+ + ShBrowseForDialog patch
+! fix some cd control plugin bug
+! fix a volume control plugin bug
+
 v1.22 [2006-09-15]
 ! fixed autorun bug.
 + some more languages added and updated.

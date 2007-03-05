@@ -36,15 +36,15 @@ INT_PTR CALLBACK SettingDlgHotKeyProc(HWND hwndDlg, UINT uMsg,
 	case WM_INITDIALOG:
 		{
 			// load local language command
-			LoadLanguageString(lang_file_loc, DlgHKSection, 100, HC_hide, MAX_COMMENT);
-			LoadLanguageString(lang_file_loc, DlgHKSection, 101, HC_tray, MAX_COMMENT);
-			LoadLanguageString(lang_file_loc, DlgHKSection, 102, HC_icon, MAX_COMMENT);
-			LoadLanguageString(lang_file_loc, DlgHKSection, 103, HC_inc, MAX_COMMENT);
-			LoadLanguageString(lang_file_loc, DlgHKSection, 104, HC_dec, MAX_COMMENT);
-			LoadLanguageString(lang_file_loc, DlgHKSection, 105, HC_reset, MAX_COMMENT);
-			LoadLanguageString(lang_file_loc, DlgHKSection, 106, HC_top, MAX_COMMENT);
-			LoadLanguageString(lang_file_loc, DlgHKSection, 107, HC_fav, MAX_COMMENT);
-			LoadLanguageString(lang_file_loc, DlgHKSection, 108, HC_hides, MAX_COMMENT);
+			LoadLanguageString(lang_file, DlgHKSection, 100, HC_hide, MAX_COMMENT);
+			LoadLanguageString(lang_file, DlgHKSection, 101, HC_tray, MAX_COMMENT);
+			LoadLanguageString(lang_file, DlgHKSection, 102, HC_icon, MAX_COMMENT);
+			LoadLanguageString(lang_file, DlgHKSection, 103, HC_inc, MAX_COMMENT);
+			LoadLanguageString(lang_file, DlgHKSection, 104, HC_dec, MAX_COMMENT);
+			LoadLanguageString(lang_file, DlgHKSection, 105, HC_reset, MAX_COMMENT);
+			LoadLanguageString(lang_file, DlgHKSection, 106, HC_top, MAX_COMMENT);
+			LoadLanguageString(lang_file, DlgHKSection, 107, HC_fav, MAX_COMMENT);
+			LoadLanguageString(lang_file, DlgHKSection, 108, HC_hides, MAX_COMMENT);
 		}
 		{
 			char szBuf[MAX_PATH];
@@ -60,13 +60,13 @@ INT_PTR CALLBACK SettingDlgHotKeyProc(HWND hwndDlg, UINT uMsg,
 			lc.mask = LVCF_TEXT | LVCF_WIDTH | LVCF_SUBITEM;
 			lc.fmt = LVCFMT_LEFT;
 			lc.cx = 100;
-			LoadLanguageString(lang_file_loc, DlgHKSection, 0, szBuf, MAX_PATH);
+			LoadLanguageString(lang_file, DlgHKSection, 0, szBuf, MAX_PATH);
 			lc.pszText = szBuf;
 			ListView_InsertColumn(hListView_hk, 0, &lc);
-			LoadLanguageString(lang_file_loc, DlgHKSection, 1, szBuf, MAX_PATH);
+			LoadLanguageString(lang_file, DlgHKSection, 1, szBuf, MAX_PATH);
 			lc.cx = 160;
 			ListView_InsertColumn(hListView_hk, 1, &lc);
-			LoadLanguageString(lang_file_loc, DlgHKSection, 2, szBuf, MAX_PATH);
+			LoadLanguageString(lang_file, DlgHKSection, 2, szBuf, MAX_PATH);
 			lc.cx = 60;
 			ListView_InsertColumn(hListView_hk, 2, &lc);
 			
@@ -96,7 +96,7 @@ INT_PTR CALLBACK SettingDlgHotKeyProc(HWND hwndDlg, UINT uMsg,
 			sizeof(dwBtnHK)/sizeof(DWORD));
 
 		SetLanguageFont(hLocalFont, hwndDlg);
-		TranslateLanguage(lang_file_loc, hwndDlg, DlgHKSection);
+		TranslateLanguage(lang_file, hwndDlg, DlgHKSection);
 		return TRUE;
 	case WM_NOTIFY:
 		if(wParam == IDC_LIST_HOTKEY)
@@ -360,18 +360,18 @@ INT_PTR CALLBACK EditHKDataProc(HWND hwndDlg, UINT uMsg,
 				ListView_GetItem(hListView_hk, &vi);
 				SendDlgItemMessage(hwndDlg, IDC_EDIT_HKPARAM, 
 					WM_SETTEXT, 0, (LPARAM)szParam);
-				LoadLanguageString(lang_file_loc, EditDlgHKSection, 100, szBuf, MAX_PATH);
+				LoadLanguageString(lang_file, EditDlgHKSection, 100, szBuf, MAX_PATH);
 			}
 			else
 			{
-				LoadLanguageString(lang_file_loc, EditDlgHKSection, 101, szBuf, MAX_PATH);
+				LoadLanguageString(lang_file, EditDlgHKSection, 101, szBuf, MAX_PATH);
 				SendMessage(hCombo, CB_SETCURSEL, 0, 0);
 			}
 			SetWindowText(hwndDlg, szBuf);
 		}
 
 		SetLanguageFont(hLocalFont, hwndDlg);
-		TranslateLanguage(lang_file_loc, hwndDlg, EditDlgHKSection);
+		TranslateLanguage(lang_file, hwndDlg, EditDlgHKSection);
 		return TRUE;
 	case WM_COMMAND:
 		switch(LOWORD(wParam))
@@ -411,7 +411,7 @@ INT_PTR CALLBACK EditHKDataProc(HWND hwndDlg, UINT uMsg,
 						hk = (PSHK_DATA)(lv.lParam);
 						if(hk->dwKey == dwKey)
 						{
-							LocalMsgBox(hwndDlg, lang_file_loc, 0, 122, MB_OK|MB_ICONINFORMATION);
+							LocalMsgBox(hwndDlg, lang_file, 0, 122, MB_OK|MB_ICONINFORMATION);
 							return FALSE;
 						}
 					}
@@ -745,7 +745,7 @@ void DM2FavMenu_Command(int cmd)
 					if(CreateProcess(NULL, pTemp, NULL, NULL, FALSE, NORMAL_PRIORITY_CLASS,
 						NULL, NULL, &si, &pi) == 0)
 					{
-						LocalMsgBox(NULL, lang_file_loc, 0, 103, MB_OK|MB_ICONINFORMATION);
+						LocalMsgBox(NULL, lang_file, 0, 103, MB_OK|MB_ICONINFORMATION);
 					}
 				}
 				else
