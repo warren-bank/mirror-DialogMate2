@@ -72,7 +72,7 @@ INT_PTR CALLBACK SettingDlgFavMenuProc(HWND hwndDlg, UINT uMsg,
 		hTreeCursor = LoadCursor(NULL, IDC_NO);
 
 		SetLanguageFont(hLocalFont, hwndDlg);
-		TranslateLanguage(lang_file, hwndDlg, DlgFavSection);
+		TranslateLanguage(lang_file_loc, hwndDlg, DlgFavSection);
 		return TRUE;
 	case WM_MOUSEMOVE:
 		{
@@ -309,7 +309,7 @@ INT_PTR CALLBACK SettingDlgFavMenuProc(HWND hwndDlg, UINT uMsg,
 				PSFAV_DATA pData, last;
 				if(i < 2 && i != LB_ERR)
 				{
-					LocalMsgBox(hwndDlg, lang_file, 0, 105, MB_OK|MB_ICONINFORMATION);
+					LocalMsgBox(hwndDlg, lang_file_loc, 0, 105, MB_OK|MB_ICONINFORMATION);
 					break;
 				}
 				SendMessage(hListBox_menu, LB_GETTEXT, i, (LPARAM)szName);
@@ -347,7 +347,7 @@ INT_PTR CALLBACK SettingDlgFavMenuProc(HWND hwndDlg, UINT uMsg,
 				int i = SendMessage(hListBox_menu, LB_GETCURSEL, 0, 0);
 				if(i < 2 && i != LB_ERR)
 				{
-					LocalMsgBox(hwndDlg, lang_file, 0, 106, MB_OK|MB_ICONINFORMATION);
+					LocalMsgBox(hwndDlg, lang_file_loc, 0, 106, MB_OK|MB_ICONINFORMATION);
 					break;
 				}
 				if(i != LB_ERR)
@@ -379,7 +379,7 @@ INT_PTR CALLBACK SettingDlgFavMenuProc(HWND hwndDlg, UINT uMsg,
 					DialogBoxParam(processHandle, (LPCTSTR)IDD_DM2_FAVMENUITEM_EDIT, 
 						hwndDlg, EditFavMenuItemProc, 0);
 				else
-					LocalMsgBox(hwndDlg, lang_file, 0, 108, MB_OK|MB_ICONINFORMATION);
+					LocalMsgBox(hwndDlg, lang_file_loc, 0, 108, MB_OK|MB_ICONINFORMATION);
 			}
 			break;
 		default:
@@ -714,17 +714,17 @@ INT_PTR CALLBACK EditFavMenuDataProc(HWND hwndDlg, UINT uMsg,
 			if(IsEditMenu)
 			{
 				char szTemp[MAXRULE2];
-				LoadLanguageString(lang_file, SecDlgFavSection, 100, szBuf, MAX_PATH);
+				LoadLanguageString(lang_file_loc, SecDlgFavSection, 100, szBuf, MAX_PATH);
 				SendMessage(hListBox_menu, LB_GETTEXT, (WPARAM)lParam, (LPARAM)szTemp);
 				SetDlgItemText(hwndDlg, IDC_EDIT_SECTION, szTemp);
 			}
 			else
-				LoadLanguageString(lang_file, SecDlgFavSection, 101, szBuf, MAX_PATH);
+				LoadLanguageString(lang_file_loc, SecDlgFavSection, 101, szBuf, MAX_PATH);
 			SetWindowText(hwndDlg, szBuf);
 		}
 
 		SetLanguageFont(hLocalFont, hwndDlg);
-		TranslateLanguage(lang_file, hwndDlg, SecDlgFavSection);
+		TranslateLanguage(lang_file_loc, hwndDlg, SecDlgFavSection);
 		return TRUE;
 	case WM_COMMAND:
 		switch(LOWORD(wParam))
@@ -739,7 +739,7 @@ INT_PTR CALLBACK EditFavMenuDataProc(HWND hwndDlg, UINT uMsg,
 				GetDlgItemText(hwndDlg, IDC_EDIT_SECTION, szTemp, MAXRULE2);
 				if(*szTemp == 0)
 				{
-					LocalMsgBox(hwndDlg, lang_file, 0, 109, MB_OK|MB_ICONINFORMATION);
+					LocalMsgBox(hwndDlg, lang_file_loc, 0, 109, MB_OK|MB_ICONINFORMATION);
 					return FALSE;
 				}
 				//detect
@@ -753,7 +753,7 @@ INT_PTR CALLBACK EditFavMenuDataProc(HWND hwndDlg, UINT uMsg,
 						if(!IsEditMenu || 
 							SendMessage(hListBox_menu, LB_GETCURSEL, 0, 0) != i)
 						{	
-							LocalMsgBox(hwndDlg, lang_file, 0, 110, MB_OK|MB_ICONINFORMATION);
+							LocalMsgBox(hwndDlg, lang_file_loc, 0, 110, MB_OK|MB_ICONINFORMATION);
 							return FALSE;
 						}
 					}
@@ -824,6 +824,19 @@ BOOL CheckMenuItemString(char *String)
 	}
 	return TRUE;
 }
+
+static int CALLBACK BrowseFolderCallbackProc(HWND wnd, UINT uMsg,
+										  WPARAM wParam, LPARAM lParam)
+{
+    if (BFFM_INITIALIZED == uMsg)
+    {   
+        //restore the selection
+        char *szDir = (LPSTR)lParam;
+        SendMessage(wnd, BFFM_SETSELECTION, (WPARAM)TRUE, (LPARAM)szDir);              
+    }
+    return 0;
+}
+
 BOOL IsEditMenuItem = FALSE;
 char *MenuDlgFavSection = "SettingsDialogFavMenu";
 extern HWND hLastDlg;
@@ -845,7 +858,7 @@ INT_PTR CALLBACK EditFavMenuItemProc(HWND hwndDlg, UINT uMsg,
 				char szName[MAX_PATH2];
 				TVITEM tv;
 
-				LoadLanguageString(lang_file, MenuDlgFavSection, 100, szBuf, MAX_PATH);
+				LoadLanguageString(lang_file_loc, MenuDlgFavSection, 100, szBuf, MAX_PATH);
 
 				memset(&tv, 0, sizeof(TVITEM));
 				tv.mask = TVIF_HANDLE|TVIF_PARAM|TVIF_TEXT;
@@ -870,12 +883,12 @@ INT_PTR CALLBACK EditFavMenuItemProc(HWND hwndDlg, UINT uMsg,
 				}
 			}
 			else
-				LoadLanguageString(lang_file, MenuDlgFavSection, 101, szBuf, MAX_PATH);
+				LoadLanguageString(lang_file_loc, MenuDlgFavSection, 101, szBuf, MAX_PATH);
 			SetWindowText(hwndDlg, szBuf);
 		}
 
 		SetLanguageFont(hLocalFont, hwndDlg);
-		TranslateLanguage(lang_file, hwndDlg, MenuDlgFavSection);
+		TranslateLanguage(lang_file_loc, hwndDlg, MenuDlgFavSection);
 		return TRUE;
 	case WM_COMMAND:
 		switch(LOWORD(wParam))
@@ -892,25 +905,25 @@ INT_PTR CALLBACK EditFavMenuItemProc(HWND hwndDlg, UINT uMsg,
 					GetDlgItemText(hwndDlg, IDC_EDIT_PATH, szPath, MAX_PATH2);
 					if(*szName == '\0')
 					{
-						LocalMsgBox(hwndDlg, lang_file, 0, 111, MB_OK|MB_ICONINFORMATION);
+						LocalMsgBox(hwndDlg, lang_file_loc, 0, 111, MB_OK|MB_ICONINFORMATION);
 						return FALSE;
 					}
 					// v1.18 changed
 					// old: if(strchr(szName, '-'))
 					if(CheckMenuItemString(szName) == FALSE)
 					{
-						LocalMsgBox(hwndDlg, lang_file, 0, 112, MB_OK|MB_ICONINFORMATION);
+						LocalMsgBox(hwndDlg, lang_file_loc, 0, 112, MB_OK|MB_ICONINFORMATION);
 						return FALSE;
 					}
 					if(CheckMenuItemString(szPath) == FALSE)
 					{
-						LocalMsgBox(hwndDlg, lang_file, 0, 113, MB_OK|MB_ICONINFORMATION);
+						LocalMsgBox(hwndDlg, lang_file_loc, 0, 113, MB_OK|MB_ICONINFORMATION);
 							return FALSE;
 					}
 					if(*szPath == '\0' && 
 						IsDlgButtonChecked(hwndDlg, IDC_CHK_SUB) == BST_UNCHECKED)
 					{
-						LocalMsgBox(hwndDlg, lang_file, 0, 114, MB_OK|MB_ICONINFORMATION);
+						LocalMsgBox(hwndDlg, lang_file_loc, 0, 114, MB_OK|MB_ICONINFORMATION);
 							return FALSE;
 					}
 				}
@@ -1022,14 +1035,17 @@ INT_PTR CALLBACK EditFavMenuItemProc(HWND hwndDlg, UINT uMsg,
 				{
 					LPITEMIDLIST pidlRoot = NULL;
 					BROWSEINFO bi = {0};
+					char szOldPath[MAX_PATH];
+					memset(szOldPath, 0, MAX_PATH);
 					
 					bi.hwndOwner = hwndDlg;
 					bi.pidlRoot = pidlRoot;
 					//#define BIF_NEWDIALOGSTYLE 64
 					//#define BIF_UAHINT 256
-					bi.ulFlags = BIF_DONTGOBELOWDOMAIN | 64 | BIF_RETURNONLYFSDIRS | 256;
-					bi.lpfn = NULL;
-					bi.lParam = 0;
+					bi.ulFlags = BIF_DONTGOBELOWDOMAIN | 64 | BIF_RETURNONLYFSDIRS | 256 | BIF_EDITBOX;
+					bi.lpfn = BrowseFolderCallbackProc;
+					GetDlgItemText(hwndDlg, IDC_EDIT_PATH, szOldPath, MAX_PATH);
+					bi.lParam = (LPARAM)szOldPath;
 					SHGetPathFromIDList(SHBrowseForFolder(&bi), szPath);
 					if(*szPath != '\0')
 						SetDlgItemText(hwndDlg, IDC_EDIT_PATH, szPath);

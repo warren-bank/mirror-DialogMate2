@@ -190,6 +190,8 @@
 #define IDC_COMBO_CMIB                  1148
 #define IDC_COMBO_CMAB                  1149
 #define IDC_COMBO_CMCB                  1150
+#define IDC_HOTKEY_EXT                  1151
+#define IDC_TAB_ACTION                  1152
 #define ID_RESIZE_640480                40001
 #define ID_RESIZE_800600                40002
 #define ID_RESIZE_1024768               40003
@@ -207,7 +209,7 @@
 #define _APS_NO_MFC                     1
 #define _APS_NEXT_RESOURCE_VALUE        121
 #define _APS_NEXT_COMMAND_VALUE         40009
-#define _APS_NEXT_CONTROL_VALUE         1140
+#define _APS_NEXT_CONTROL_VALUE         1153
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif
