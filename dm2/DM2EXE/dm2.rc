@@ -34,6 +34,7 @@ LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
 IDI_TREE                ICON    DISCARDABLE     "TreeDir.ico"
 APPICON                 ICON    DISCARDABLE     "../dm2.ico"
 IDI_TREEITEM            ICON    DISCARDABLE     "TreeItem.ico"
+IDI_GHOST               ICON    DISCARDABLE     "ghost.ico"
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -371,7 +372,7 @@ END
 IDD_DM2_HOTKEY_EDIT DIALOGEX 0, 0, 221, 74
 STYLE DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
 EXSTYLE WS_EX_TOOLWINDOW
-FONT 8, "Tahoma"
+FONT 8, "Tahoma", 0, 0, 0x1
 BEGIN
     LTEXT           "HotKey:",IDC_STATIC_HK,3,8,41,8
     CONTROL         "HotKey_CMD",IDC_HOTKEY_EDIT,"msctls_hotkey32",WS_BORDER | 
@@ -505,6 +506,23 @@ BEGIN
     LTEXT           "",IDC_STATIC_BR,28,22,13,10,SS_NOTIFY
 END
 
+IDD_DM2_GHOSTIT DIALOGEX 0, 0, 227, 175
+STYLE WS_CHILD
+EXSTYLE WS_EX_CONTROLPARENT
+FONT 8, "Tahoma"
+BEGIN
+    LTEXT           "Active window opacity:",IDC_STATIC_GIA,9,140,120,8
+    LTEXT           "Inactive window opacity:",IDC_STATIC_GII,9,156,120,8
+    ICON            IDI_GHOST,IDC_STATIC,8,9,20,20
+    EDITTEXT        IDC_EDIT_AWO,135,137,40,12,ES_AUTOHSCROLL | ES_NUMBER | 
+                    NOT WS_BORDER,WS_EX_STATICEDGE
+    EDITTEXT        IDC_EDIT_IAWO,135,153,40,12,ES_AUTOHSCROLL | ES_NUMBER | 
+                    NOT WS_BORDER,WS_EX_STATICEDGE
+    LTEXT           "%",IDC_STATIC,179,140,8,8
+    LTEXT           "%",IDC_STATIC,179,156,8,8
+    LTEXT           "GhostIt Introduction",IDC_STATIC_GIME,38,4,186,125
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -533,6 +551,11 @@ BEGIN
     IDD_DM2_ACTION_ALIGN, DIALOG
     BEGIN
         BOTTOMMARGIN, 31
+    END
+
+    IDD_DM2_GHOSTIT, DIALOG
+    BEGIN
+        LEFTMARGIN, 1
     END
 END
 #endif    // APSTUDIO_INVOKED

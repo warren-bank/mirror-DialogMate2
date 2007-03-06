@@ -25,6 +25,7 @@ char HC_reset[MAX_COMMENT];
 char HC_top[MAX_COMMENT];
 char HC_fav[MAX_COMMENT];
 char HC_hides[MAX_COMMENT];
+char HC_ghost[MAX_COMMENT];
 
 DWORD dwBtnHK[] = {IDC_BTN_HKADD, IDC_BTN_HKEDIT, IDC_BTN_HKDEL};
 
@@ -45,6 +46,7 @@ INT_PTR CALLBACK SettingDlgHotKeyProc(HWND hwndDlg, UINT uMsg,
 			LoadLanguageString(lang_file, DlgHKSection, 106, HC_top, MAX_COMMENT);
 			LoadLanguageString(lang_file, DlgHKSection, 107, HC_fav, MAX_COMMENT);
 			LoadLanguageString(lang_file, DlgHKSection, 108, HC_hides, MAX_COMMENT);
+			LoadLanguageString(lang_file, DlgHKSection, 109, HC_ghost, MAX_COMMENT);
 		}
 		{
 			char szBuf[MAX_PATH];
@@ -173,6 +175,7 @@ char *Hotkey_Command[] = {
 	HC_top,
 	HC_fav,
 	HC_hides,
+	HC_ghost,
 	""								//must use null string in end.
 };
 
@@ -185,6 +188,7 @@ static char cm_opa[] = "dm2_cmd_reset_opacity";
 static char cm_top[] = "dm2_cmd_win_ontop";
 static char cm_menu[] = "dm2_cmd_showfav";
 static char cm_hides[] = "dm2_cmd_specifiedhide";
+static char cm_ghost[] = "dm2_cmd_ghostit";
 static char *DM2_HK_Command[] = {
 	cm_hide,
 	cm_tray,
@@ -195,6 +199,7 @@ static char *DM2_HK_Command[] = {
 	cm_top,
 	cm_menu,
 	cm_hides,
+	cm_ghost,
 	""								//must use null string in end.
 };
 
@@ -512,6 +517,7 @@ extern int make_argv(char *arg, char ***argv);
 
 extern PSHARED_DATA pshared;
 extern HICON hIcon;
+extern PGHOSTIT g_pgit;
 BOOL bWinEnable = FALSE;
 void DoHotKey_Command(int cmd)
 {
@@ -590,6 +596,19 @@ void DoHotKey_Command(int cmd)
 	else if(lstrcmpi(hk_last->szCMD, cm_hides) == 0)
 	{
 		EnumWindows(HideSpecifiedWindows, (LPARAM)hk_last->szParam);
+	}
+	else if(lstrcmpi(hk_last->szCMD, cm_ghost) == 0)
+	{
+		char szName[MAX_PATH];
+		GetClassName(hWnd, szName, MAX_PATH);
+		if(lstrcmp(szName, "Shell_TrayWnd") == 0) //if not the taskbar
+			return;
+		GetWindowText(hWnd, szName, MAX_PATH);
+		if(lstrcmp(szName, "Program Manager") == 0) //if not the desktop
+			return;
+		
+		if(AddGhostIt(hWnd, &g_pgit) == FALSE)
+			RemoveHWNDGhostIt(hWnd, &g_pgit);
 	}
 	else
 	{

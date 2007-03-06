@@ -41,7 +41,7 @@ char dm2FlicoClassName[] = "DM2 flico class";
 
 PFF_PLUGINS ffp;
 
-char *DM2_Ver = "DM2 v1.23";
+char *DM2_Ver = "DM2 v1.23.1";
 BOOL IsWinNT = FALSE;
 
 //for VC++ application EntryPoint, DM2.exe have less size.
@@ -115,6 +115,10 @@ extern PSEXCEPT_DATA Except_data;
 extern PSHK_DATA hk_data;
 extern PSREC_DATA pRec;
 extern PSAC_DATA Action_data;
+extern SGHOST_DATA Ghost_data;
+
+PGHOSTIT g_pgit = NULL;
+extern void RemoveGhostIt(PGHOSTIT *git);
 
 extern void UnregisterAllHotKey();
 
@@ -171,6 +175,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		lstrcpy(strrchr(Ini, '\\')+1, "dm2.ini");
 		inifile = (char *)&Ini;
 		GetGenSetting(inifile, &Gen_data);
+		GetGhostSetting(inifile, &Ghost_data);
 		GetAdvSetting(inifile, &Adv_data);
 		Custom_data = GetCustomSetting(inifile);
 		Except_data = GetExceptSetting(inifile);
@@ -240,6 +245,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	__finally
 	{
 		//remove all data
+		RemoveGhostIt(&g_pgit);
 		if(Adv_data.EnableHotKey)
 			UnregisterHotKey(pshared->DM2wnd, HK_CMD);
 		DisableDM2Menu();

@@ -21,6 +21,8 @@ extern SGEN_DATA Gen_data;
 SGEN_DATA Gen_data_temp;
 extern SADV_DATA Adv_data;
 SADV_DATA adv_data_temp;
+extern SGHOST_DATA Ghost_data;
+SGHOST_DATA Ghost_data_temp;
 extern PSCUSTOM_DATA Custom_data;
 PSCUSTOM_DATA Custom_data_temp = NULL;
 extern PSEXCEPT_DATA Except_data;
@@ -79,6 +81,7 @@ INT_PTR CALLBACK SettingDlgProc(HWND hwndDlg, UINT uMsg,
 		//Copy Settings data
 		memcpy(&Gen_data_temp, &Gen_data, sizeof(SGEN_DATA));
 		memcpy(&adv_data_temp, &Adv_data, sizeof(SADV_DATA));
+		memcpy(&Ghost_data_temp, &Ghost_data, sizeof(SGHOST_DATA));
 		{
 			PSCUSTOM_DATA last = Custom_data;
 			PSCUSTOM_DATA lastcopy = NULL;
@@ -176,6 +179,8 @@ INT_PTR CALLBACK SettingDlgProc(HWND hwndDlg, UINT uMsg,
 			htlast = AddTreeViewItem(szBuf, TVI_ROOT, TVI_ROOT, 0);
 			LoadLanguageString(lang_file, DlgSection, IDD_DM2_GENERAL, szBuf, MAX_PATH);
 			AddTreeViewItem(szBuf, htlast, TVI_LAST, IDD_DM2_GENERAL);
+			LoadLanguageString(lang_file, DlgSection, IDD_DM2_CUSTOM, szBuf, MAX_PATH);
+			AddTreeViewItem(szBuf, htlast, TVI_LAST, IDD_DM2_CUSTOM);
 			LoadLanguageString(lang_file, DlgSection, IDD_DM2_ADVANCE, szBuf, MAX_PATH);
 			AddTreeViewItem(szBuf, htlast, TVI_LAST, IDD_DM2_ADVANCE);
 			LoadLanguageString(lang_file, DlgSection, IDD_DM2_ACTION, szBuf, MAX_PATH);
@@ -184,8 +189,8 @@ INT_PTR CALLBACK SettingDlgProc(HWND hwndDlg, UINT uMsg,
 			AddTreeViewItem(szBuf, htlast, TVI_LAST, IDD_DM2_HOTKEY);
 			LoadLanguageString(lang_file, DlgSection, IDD_DM2_FAVMENU, szBuf, MAX_PATH);
 			AddTreeViewItem(szBuf, htlast, TVI_LAST, IDD_DM2_FAVMENU);
-			LoadLanguageString(lang_file, DlgSection, IDD_DM2_CUSTOM, szBuf, MAX_PATH);
-			AddTreeViewItem(szBuf, htlast, TVI_LAST, IDD_DM2_CUSTOM);
+			LoadLanguageString(lang_file, DlgSection, IDD_DM2_GHOSTIT, szBuf, MAX_PATH);
+			AddTreeViewItem(szBuf, htlast, TVI_LAST, IDD_DM2_GHOSTIT);
 			LoadLanguageString(lang_file, DlgSection, IDD_DM2_EXCEPTION, szBuf, MAX_PATH);
 			AddTreeViewItem(szBuf, htlast, TVI_LAST, IDD_DM2_EXCEPTION);
 			SendMessage(hTree, TVM_EXPAND, (WPARAM)TVE_EXPAND, (LPARAM)htlast);
@@ -223,6 +228,8 @@ INT_PTR CALLBACK SettingDlgProc(HWND hwndDlg, UINT uMsg,
 			WriteGenSetting(inifile, &Gen_data);
 			memcpy(&Adv_data, &adv_data_temp, sizeof(SADV_DATA));
 			WriteAdvSetting(inifile, &Adv_data);
+			memcpy(&Ghost_data, &Ghost_data_temp, sizeof(SGHOST_DATA));
+			WriteGhostSetting(inifile, &Ghost_data);
 			
 			memcpy(Action_data, Action_data_temp, sizeof(SAC_DATA));
 			WriteActionSetting(inifile, Action_data);
@@ -380,6 +387,11 @@ INT_PTR CALLBACK SettingDlgProc(HWND hwndDlg, UINT uMsg,
 						hLastDlg = CreateDialog(processHandle, 
 							(LPCTSTR)IDD_DM2_CUSTOM, hDlgParent, 
 							SettingDlgCustomProc);
+						break;
+					case IDD_DM2_GHOSTIT:
+						hLastDlg = CreateDialog(processHandle, 
+							(LPCTSTR)IDD_DM2_GHOSTIT, hDlgParent, 
+							SettingDlgGhostItProc);
 						break;
 					case IDD_DM2_EXCEPTION:
 						hLastDlg = CreateDialog(processHandle, 

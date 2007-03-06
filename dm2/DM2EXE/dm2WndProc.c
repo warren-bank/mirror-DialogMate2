@@ -55,6 +55,7 @@ extern PSFAV_DATA Fav_data;
 extern char szFavApp[];
 extern char szFavDef[];
 extern PSREC_DATA pRec;
+extern PGHOSTIT g_pgit;
 // use _snprintf replace wsprintf at IDM_NEED_FAV message.
 extern int __cdecl _snprintf(char *, size_t, const char *, ...);
 extern void ResizeWindow(int w, int h, BOOL bIsPixel);
@@ -186,6 +187,9 @@ LRESULT WINAPI DM2WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 		case WM_TIMER:
 			switch(wParam)
 			{
+			case GHOST_TIMER:
+				SetGhostStatus(&g_pgit);
+				break;
 			case IDC_CHK_DWC:
 				DetectCloseWindow();
 				break;

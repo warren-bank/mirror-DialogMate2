@@ -70,7 +70,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /YX /FD /GZ /c
-# ADD CPP /nologo /Gz /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /FD /GZ /c
+# ADD CPP /nologo /Gz /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /FR /FD /GZ /c
 # SUBTRACT CPP /YX
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
@@ -122,6 +122,10 @@ SOURCE=.\SettingDialog\FavMenuDlg.c
 # Begin Source File
 
 SOURCE=.\SettingDialog\GeneralDlg.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\SettingDialog\GhostItDlg.c
 # End Source File
 # Begin Source File
 
@@ -259,6 +263,10 @@ SOURCE=..\dm2.ico
 # Begin Source File
 
 SOURCE=..\dm2.jpg
+# End Source File
+# Begin Source File
+
+SOURCE=.\ghost.ico
 # End Source File
 # Begin Source File
 

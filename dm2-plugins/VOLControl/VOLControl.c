@@ -7,7 +7,6 @@
 #pragma comment(linker, "/IGNORE:4078 /IGNORE:4089")
 #pragma comment(linker, "/RELEASE")
 #pragma comment(linker, "/merge:.rdata=.data")
-//#pragma comment(linker, "/merge:.text=.data")
 #pragma comment(linker, "/merge:.reloc=.data")
 #if _MSC_VER >= 1000
 #pragma comment(linker, "/FILEALIGN:0x200")
@@ -31,7 +30,7 @@ BOOL APIENTRY DllMain( HANDLE hModule, DWORD  ul_reason_for_call, LPVOID lpReser
 
 void __cdecl ShowAbout(HWND hwnd_dm2)
 {
-	MessageBox(hwnd_dm2, "Volume Control v0.01\r--The convenient control volume.\r\rCode by flyfancy. 2005.08", "About",
+	MessageBox(hwnd_dm2, "Volume Control v0.02\r--The convenient control volume.\r\rCode by flyfancy. 2007.03", "About",
 		MB_OK|MB_ICONINFORMATION);
 }
 

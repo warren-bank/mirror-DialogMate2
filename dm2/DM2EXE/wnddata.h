@@ -19,6 +19,12 @@ typedef struct {
 	PSGEN_DATA settings;		// all joined window settings
 } WND_DATA, *PWND_DATA;
 
+typedef struct {
+	HWND hwnd;
+	LONG orig_style;
+	void *next;
+} GHOSTIT, *PGHOSTIT;
+#define GHOST_TIMER 0x66
 
 extern void InitWndData();
 extern PWND_DATA NewWndDataEx();

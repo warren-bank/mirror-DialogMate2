@@ -34,6 +34,10 @@ void SetSnText(HWND last, char *SN, char part);
 void ShowFavMenu();
 void DM2FavMenu_Command(int cmd);
 void Do_Action_Command(HWND hWnd, DWORD Info);
+BOOL AddGhostIt(HWND hwnd, PGHOSTIT *git);
+void RemoveHWNDGhostIt(HWND hwnd, PGHOSTIT *git);
+void SetGhostStatus(PGHOSTIT *git);
+void RemoveGhostIt(PGHOSTIT *git);
 
 //Dialog Proc
 INT_PTR CALLBACK SettingDlgGeneralProc(HWND, UINT, WPARAM, LPARAM);
@@ -41,6 +45,7 @@ INT_PTR CALLBACK SettingDlgAdvanceProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK SettingDlgHotKeyProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK SettingDlgFavMenuProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK SettingDlgCustomProc(HWND, UINT, WPARAM, LPARAM);
+INT_PTR CALLBACK SettingDlgGhostItProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK SettingDlgExceptionProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK SettingDlgWinManagerProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK SettingDlgAboutProc(HWND, UINT, WPARAM, LPARAM);

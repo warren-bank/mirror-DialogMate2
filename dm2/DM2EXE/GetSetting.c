@@ -204,6 +204,29 @@ void WriteAdvSetting(char *szini, PSADV_DATA data)
 }
 
 
+static char section_ghost_activewindow[]	= "ghostit.active";
+static char section_ghost_inactivewindow[]	= "ghostit.inactive";
+SGHOST_DATA Ghost_data;
+void GetGhostSetting(char *szini, PSGHOST_DATA data)
+{
+	data->awo = setIntRange(GetPrivateProfileInt(settings_section, 
+		section_ghost_activewindow, 80, szini), 0, 100);
+	data->iawo = setIntRange(GetPrivateProfileInt(settings_section, 
+		section_ghost_inactivewindow, 25, szini), 0, 100);
+}
+
+void WriteGhostSetting(char *szini, PSGHOST_DATA data)
+{
+	char sztemp[4];
+
+	wsprintf(sztemp, "%3d", data->awo);
+	WritePrivateProfileString(settings_section, section_ghost_activewindow, 
+		sztemp, szini);
+	wsprintf(sztemp, "%3d", data->iawo);
+	WritePrivateProfileString(settings_section, section_ghost_inactivewindow, 
+		sztemp, szini);
+}
+
 static char custom_section[] = "icon_custom";
 static char default_NULL[] = "";
 //Custom data example

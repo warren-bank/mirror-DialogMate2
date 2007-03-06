@@ -60,6 +60,11 @@ typedef struct {
 } SFAV_DATA, *PSFAV_DATA;
 
 typedef struct {
+	int awo;
+	int iawo;
+} SGHOST_DATA, *PSGHOST_DATA;
+
+typedef struct {
 	char *szRule;
 	DWORD Settings;
 	void *next;
@@ -103,6 +108,9 @@ void WriteGenSetting(char *szini, PSGEN_DATA data);
 
 void GetAdvSetting(char *szini, PSADV_DATA data);
 void WriteAdvSetting(char *szini, PSADV_DATA data);
+
+void GetGhostSetting(char *szini, PSGHOST_DATA data);
+void WriteGhostSetting(char *szini, PSGHOST_DATA data);
 
 PSCUSTOM_DATA GetCustomSetting(char *szini);
 PSCUSTOM_DATA GetNewCustom_Data(PSCUSTOM_DATA *pOld);

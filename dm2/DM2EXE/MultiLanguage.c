@@ -4,11 +4,12 @@
 
 
 char *lastSection;
+#define MAX_LANG 1024
 BOOL CALLBACK TranslateChildLanguage(HWND hwnd, LPARAM lParam)
 {
-	char szText[MAX_PATH];
+	char szText[MAX_LANG];
 	int num = GetDlgCtrlID(hwnd);
-	LoadLanguageStringEx((char *)lParam, lastSection, num, "", szText, MAX_PATH);
+	LoadLanguageStringEx((char *)lParam, lastSection, num, "", szText, MAX_LANG);
 	if(*szText != '\0')
 		SendMessage(hwnd, WM_SETTEXT, 0, (LPARAM)szText);
 	return TRUE;
@@ -75,11 +76,11 @@ char *MsgSection = "Messages";
 int LocalMsgBoxEx(HWND hWnd, char *lang_file, char *def_Title, char *def_Text, 
 				 int TitleNum, int TextNum, UINT uType)
 {
-	char Title[MAX_PATH], Text[MAX_PATH];
+	char Title[MAX_LANG], Text[MAX_LANG];
 	if(*lang_file == '\0')
 		return MessageBox(hWnd, def_Text, def_Title, uType);
-	LoadLanguageString(lang_file, MsgSection, TitleNum, Title, MAX_PATH);
-	LoadLanguageString(lang_file, MsgSection, TextNum, Text, MAX_PATH);
+	LoadLanguageString(lang_file, MsgSection, TitleNum, Title, MAX_LANG);
+	LoadLanguageString(lang_file, MsgSection, TextNum, Text, MAX_LANG);
 	if(*Title == '\0')
 		lstrcpy(Title, def_Title);
 	if(*Text == '\0')
@@ -89,9 +90,9 @@ int LocalMsgBoxEx(HWND hWnd, char *lang_file, char *def_Title, char *def_Text,
 
 int LocalMsgBox(HWND hWnd, char *lang_file, int TitleNum, int TextNum, UINT uType)
 {
-	char Title[MAX_PATH], Text[MAX_PATH];
-	LoadLanguageString(lang_file, MsgSection, TitleNum, Title, MAX_PATH);
-	LoadLanguageString(lang_file, MsgSection, TextNum, Text, MAX_PATH);
+	char Title[MAX_LANG], Text[MAX_LANG];
+	LoadLanguageString(lang_file, MsgSection, TitleNum, Title, MAX_LANG);
+	LoadLanguageString(lang_file, MsgSection, TextNum, Text, MAX_LANG);
 	return MessageBox(hWnd, Text, Title, uType);
 }
 
@@ -101,7 +102,7 @@ void TranslateMenuLanguage(char *lang_file, HMENU hMenu, char *Section)
 {
 	int i = 0;
 	int j = GetMenuItemCount(hMenu);
-	char szBuf[MAX_PATH];
+	char szBuf[MAX_LANG];
 	MENUITEMINFO mi;
 	ZeroMemory(&mi, sizeof(MENUITEMINFO));
 	mi.cbSize = sizeof(MENUITEMINFO);
@@ -111,21 +112,21 @@ void TranslateMenuLanguage(char *lang_file, HMENU hMenu, char *Section)
 	mi.dwTypeData = szBuf;
 	for(; i<j; i++)
 	{
-		mi.cch = MAX_PATH;
+		mi.cch = MAX_LANG;
 		GetMenuItemInfo(hMenu, i, TRUE, &mi);
 		if(mi.fType & MFT_SEPARATOR || mi.fType & MFT_BITMAP)
 			continue;
 		else if(mi.hSubMenu)
 		{
 			//only for DM2_FLICO_POPUP menu. can't process Multi-Sub Menu.
-			LoadLanguageString(lang_file, Section, 0, szBuf, MAX_PATH);
+			LoadLanguageString(lang_file, Section, 0, szBuf, MAX_LANG);
 			if(*szBuf != '\0')
 				SetMenuItemInfo(hMenu, i, TRUE, &mi);
 			TranslateMenuLanguage(lang_file, mi.hSubMenu, Section);
 		}
 		else if(mi.wID)
 		{
-			LoadLanguageString(lang_file, Section, mi.wID, szBuf, MAX_PATH);
+			LoadLanguageString(lang_file, Section, mi.wID, szBuf, MAX_LANG);
 			if(*szBuf != '\0')
 				SetMenuItemInfo(hMenu, i, TRUE, &mi);
 		}

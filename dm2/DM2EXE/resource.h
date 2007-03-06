@@ -25,6 +25,8 @@
 #define IDD_DM2_ACTION_RESIZEWIN        118
 #define IDD_DM2_ACTION_ALIGN            119
 #define IDB_BITMAP_ALIGN                120
+#define IDD_DM2_GHOSTIT                 121
+#define IDI_GHOST                       122
 #define IDC_BTN_EXIT                    1000
 #define IDC_TREE_SET                    1001
 #define IDC_STATIC_DLG                  1002
@@ -174,14 +176,21 @@
 #define IDC_STATIC_TC                   1139
 #define IDC_COMBO_MAB                   1140
 #define IDC_STATIC_TR                   1140
+#define IDC_STATIC_GIA                  1140
 #define IDC_COMBO_MCB                   1141
 #define IDC_STATIC_CL                   1141
+#define IDC_STATIC_GII                  1141
 #define IDC_COMBO_SMIB                  1142
 #define IDC_STATIC_CC                   1142
+#define IDC_EDIT1                       1142
+#define IDC_EDIT_AWO                    1142
 #define IDC_COMBO_SMAB                  1143
 #define IDC_STATIC_CR                   1143
+#define IDC_EDIT2                       1143
+#define IDC_EDIT_IAWO                   1143
 #define IDC_COMBO_SMCB                  1144
 #define IDC_STATIC_BL                   1144
+#define IDC_STATIC_GIME                 1144
 #define IDC_COMBO_AMIB                  1145
 #define IDC_STATIC_BC                   1145
 #define IDC_COMBO_AMAB                  1146
@@ -206,9 +215,9 @@
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NO_MFC                     1
-#define _APS_NEXT_RESOURCE_VALUE        121
+#define _APS_NEXT_RESOURCE_VALUE        123
 #define _APS_NEXT_COMMAND_VALUE         40009
-#define _APS_NEXT_CONTROL_VALUE         1140
+#define _APS_NEXT_CONTROL_VALUE         1145
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif
