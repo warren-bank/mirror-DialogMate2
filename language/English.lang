@@ -1,4 +1,4 @@
-;Language version 1.20
+;Language version 1.24
 [LangOptions]
 LanguageName=English
 FontName=MS Sans Serif
@@ -90,6 +90,7 @@ FontSize=9
 105=Hotkey
 106=Favorites Menu
 108=Custom
+121=GhostIt
 110=Exception
 115=Plugins
 107=Windows Manager
@@ -173,6 +174,7 @@ FontSize=9
 106=Toggle window on top
 107=Show favorite menu
 108=Hide specified window
+109=Ghost window
 1022=&Add
 1023=&Remove
 1024=&Edit
@@ -229,6 +231,11 @@ FontSize=9
 1090=Custom
 1=&Save
 2=&Cancel
+
+[SettingsDialogGhost]
+1144=GhostIt lets you turn windows into "ghost" windows. Ghost windows are very special windows. First of all, a ghost window is translucent, meaning you can see through it to whatever is underneath. Secondly, a ghost window will always appear on top of other windows. Thirdly, when a ghost window loses the input focus, it remains translucent and always on top, but all clicks will pass right through it like it wasn't even there-until it becomes the active window again.
+1140=Active window opacity:
+1141=Inactive window opacity:
 
 [SettingsDialogExcept]
 1091=If DM2 is not working fine with some application, please add rule to avoid problems (Reg Expressions are availiable).
