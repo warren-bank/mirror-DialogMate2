@@ -1,6 +1,10 @@
 History
 -------
 
+v1.23.2 [2007-03-12]
++ add GhostIt to action.
++ make windows manager can manager ghost windows.
+
 v1.23.1 [2007-03-05]
 + add GhostIt. lets you turn windows into "ghost" windows.
 ! fix new hotkey patch bug. (register hot key error, example: shift+up)

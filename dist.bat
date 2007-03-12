@@ -1,5 +1,5 @@
 @echo off
-SET version=1.22
+SET version=1.23.2
 echo.
 echo DM2 v%version%
 echo.

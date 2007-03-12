@@ -41,7 +41,7 @@ char dm2FlicoClassName[] = "DM2 flico class";
 
 PFF_PLUGINS ffp;
 
-char *DM2_Ver = "DM2 v1.23.1";
+char *DM2_Ver = "DM2 v1.23.2";
 BOOL IsWinNT = FALSE;
 
 //for VC++ application EntryPoint, DM2.exe have less size.

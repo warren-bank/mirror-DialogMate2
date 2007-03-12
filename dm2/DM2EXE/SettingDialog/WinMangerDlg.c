@@ -5,6 +5,7 @@
 #include "SettingDlg.h"
 
 
+extern PGHOSTIT g_pgit;
 extern PWND_DATA wndData;
 extern PSHARED_DATA pshared;
 HWND hListView_dm2;
@@ -14,6 +15,7 @@ char szNoneTitle[MAX_STATUS] = "None Title";
 char szWinStatusF[MAX_STATUS] = "Float icon";
 char szWinStatusT[MAX_STATUS] = "Tray icon";
 char szWinStatusH[MAX_STATUS] = "Hide window";
+char szWinStatusG[MAX_STATUS] = "Ghost window";
 char szWinStatusO[MAX_STATUS] = "Opacity %d%%";
 
 DWORD dwBtnWin[] = {IDC_BTN_SHOW, IDC_BTN_SHOWALL, 0, IDC_BTN_REF, 0, IDC_BTN_CLOSE};
@@ -52,6 +54,7 @@ INT_PTR CALLBACK SettingDlgWinManagerProc(HWND hwndDlg, UINT uMsg,
 			LoadLanguageString(lang_file, DlgWinSection, 102, szWinStatusT, MAX_STATUS);
 			LoadLanguageString(lang_file, DlgWinSection, 103, szWinStatusH, MAX_STATUS);
 			LoadLanguageString(lang_file, DlgWinSection, 104, szWinStatusO, MAX_STATUS);
+			LoadLanguageString(lang_file, DlgWinSection, 105, szWinStatusG, MAX_STATUS);
 		}
 		CreateRMenuCtrl(hListView_dm2, hwndDlg, (LPDWORD)dwBtnWin, 
 			sizeof(dwBtnWin)/sizeof(DWORD));
@@ -73,6 +76,7 @@ INT_PTR CALLBACK SettingDlgWinManagerProc(HWND hwndDlg, UINT uMsg,
 			{
 				LVITEM lv;
 				PWND_DATA wnd;
+				PGHOSTIT pgit;
 				int i = ListView_GetNextItem(hListView_dm2, -1, LVNI_SELECTED);
 				if(i >= 0)
 				{
@@ -80,13 +84,20 @@ INT_PTR CALLBACK SettingDlgWinManagerProc(HWND hwndDlg, UINT uMsg,
 					lv.mask = LVIF_PARAM;
 					lv.iItem = i;
 					ListView_GetItem(hListView_dm2, &lv);
-					wnd = (PWND_DATA)lv.lParam;
-
-					//if window already restore and WND_DATA already free
-					if(IsBadReadPtr(wnd, sizeof(WND_DATA)))
-						break;
-
-					RemoveWindowData(wnd);
+					if(IsGhostWindow(i))
+					{
+						pgit = (PGHOSTIT)lv.lParam;
+						if(IsBadReadPtr(pgit, sizeof(WND_DATA)))
+							break;
+						RemoveHWNDGhostIt(pgit->hwnd, &g_pgit);
+					}
+					else
+					{
+						wnd = (PWND_DATA)lv.lParam;
+						if(IsBadReadPtr(wnd, sizeof(WND_DATA)))
+							break;
+						RemoveWindowData(wnd);
+					}
 
 					RefreshWinList();
 				}
@@ -94,6 +105,7 @@ INT_PTR CALLBACK SettingDlgWinManagerProc(HWND hwndDlg, UINT uMsg,
 			break;
 		case IDC_BTN_SHOWALL:
 			SendMessage(pshared->DM2wnd, WM_COMMAND, IDM_RESTORE_ALL, 0);
+			RemoveGhostIt(&g_pgit);
 			RefreshWinList();
 			break;
 		case IDC_BTN_REF:
@@ -103,6 +115,7 @@ INT_PTR CALLBACK SettingDlgWinManagerProc(HWND hwndDlg, UINT uMsg,
 			{
 				LVITEM lv;
 				PWND_DATA wnd;
+				PGHOSTIT pgit;
 				int i = ListView_GetNextItem(hListView_dm2, -1, LVNI_SELECTED);
 				if(i >= 0)
 				{
@@ -110,16 +123,24 @@ INT_PTR CALLBACK SettingDlgWinManagerProc(HWND hwndDlg, UINT uMsg,
 					lv.mask = LVIF_PARAM;
 					lv.iItem = i;
 					ListView_GetItem(hListView_dm2, &lv);
-					wnd = (PWND_DATA)lv.lParam;
-
-					//if window already restore and WND_DATA already free
-					if(IsBadReadPtr(wnd, sizeof(WND_DATA)))
-						break;
-					
-					if(!TryCloseWindow(wnd->hwnd))
-						break;
-
-					RemoveWindowData(wnd);
+					if(IsGhostWindow(i))
+					{
+						pgit = (PGHOSTIT)lv.lParam;
+						if(IsBadReadPtr(pgit, sizeof(WND_DATA)))
+							break;
+						if(!TryCloseWindow(pgit->hwnd))
+							break;
+						RemoveHWNDGhostIt(pgit->hwnd, &g_pgit);
+					}
+					else
+					{
+						wnd = (PWND_DATA)lv.lParam;
+						if(IsBadReadPtr(wnd, sizeof(WND_DATA)))
+							break;
+						if(!TryCloseWindow(wnd->hwnd))
+							break;
+						RemoveWindowData(wnd);
+					}
 
 					RefreshWinList();
 				}
@@ -174,10 +195,18 @@ BOOL TryCloseWindow(HWND hwnd)
 	return TRUE;
 }
 
+BOOL IsGhostWindow(int i)
+{
+	char WinStatus[MAX_STATUS];
+	ListView_GetItemText(hListView_dm2, i, 1, WinStatus, MAX_STATUS);
+
+	return (strcmp(WinStatus, szWinStatusG) == 0);
+}
 
 void RefreshWinList(void)
 {
 	PWND_DATA last = wndData;
+	PGHOSTIT ghost = g_pgit;
 	LVITEM lv;
 	char szTitle[MAX_WIN_TITLE];
 	
@@ -238,5 +267,34 @@ void RefreshWinList(void)
 		
 		//Get next
 		last = last->next;
+	}
+
+	while(ghost)
+	{
+		lv.iItem = ListView_GetItemCount(hListView_dm2);
+		lv.mask = LVIF_TEXT|LVIF_IMAGE|LVIF_PARAM;
+		GetWinTitle(ghost->hwnd, szTitle);
+		lv.cchTextMax = lstrlen(szTitle);
+		if(lv.cchTextMax == 0)
+		{
+			lv.cchTextMax = sizeof(szNoneTitle)/sizeof(char)-1;
+			lv.pszText = szNoneTitle;
+		}
+		else
+		{
+			lv.pszText = szTitle;
+		}
+		lv.iSubItem = 0;
+		lv.lParam = (LPARAM)ghost;
+		lv.iImage = ImageList_AddIcon(hil, GetWindowIcon(ghost->hwnd, FALSE));
+		ListView_InsertItem(hListView_dm2, &lv);
+
+		lv.mask = LVIF_TEXT;
+		lv.pszText = szWinStatusG;
+		lv.cchTextMax = sizeof(szWinStatusG)/sizeof(char)-1;
+		lv.iSubItem = 1;
+		ListView_SetItem(hListView_dm2, &lv);
+
+		ghost = ghost->next;
 	}
 }

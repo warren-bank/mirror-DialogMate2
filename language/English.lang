@@ -271,6 +271,7 @@ FontSize=9
 102=Tray icon
 103=Hidden window
 104=Opacity %d%%
+105=Ghost window
 1006=&Restore
 1008=Restore &All
 1007=Close &Window

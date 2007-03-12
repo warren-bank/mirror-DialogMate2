@@ -38,6 +38,7 @@ BOOL AddGhostIt(HWND hwnd, PGHOSTIT *git);
 void RemoveHWNDGhostIt(HWND hwnd, PGHOSTIT *git);
 void SetGhostStatus(PGHOSTIT *git);
 void RemoveGhostIt(PGHOSTIT *git);
+BOOL IsGhostWindow(int i);
 
 //Dialog Proc
 INT_PTR CALLBACK SettingDlgGeneralProc(HWND, UINT, WPARAM, LPARAM);

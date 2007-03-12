@@ -25,6 +25,7 @@ typedef struct {
 	void *next;
 } GHOSTIT, *PGHOSTIT;
 #define GHOST_TIMER 0x66
+#define GHOST_WINDOWS 0x01
 
 extern void InitWndData();
 extern PWND_DATA NewWndDataEx();

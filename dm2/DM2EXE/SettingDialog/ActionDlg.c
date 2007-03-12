@@ -23,6 +23,7 @@ char AC_inc[MAX_COMMENT];
 char AC_dec[MAX_COMMENT];
 char AC_reset[MAX_COMMENT];
 char AC_top[MAX_COMMENT];
+char AC_ghost[MAX_COMMENT];
 
 char *Action_Command[] = {
 	AC_none,
@@ -36,6 +37,7 @@ char *Action_Command[] = {
 	AC_dec,
 	AC_reset,
 	AC_top,
+	AC_ghost,
 	""								//must use null string in end.
 };
 
@@ -62,6 +64,7 @@ INT_PTR WINAPI SettingDlgActionProc(HWND hwndDlg, UINT uMsg,
 		LoadLanguageString(lang_file, DlgHKSection, 104, AC_dec, MAX_COMMENT);
 		LoadLanguageString(lang_file, DlgHKSection, 105, AC_reset, MAX_COMMENT);
 		LoadLanguageString(lang_file, DlgHKSection, 106, AC_top, MAX_COMMENT);
+		LoadLanguageString(lang_file, DlgHKSection, 109, AC_ghost, MAX_COMMENT);
 		{
 			int i=0, j;
 			PFF_PLUGINS last = ffp;
@@ -120,6 +123,7 @@ static char cm_inc[] = "dm2_cmd_inc_opacity";
 static char cm_dec[] = "dm2_cmd_dec_opacity";
 static char cm_opa[] = "dm2_cmd_reset_opacity";
 static char cm_top[] = "dm2_cmd_win_ontop";
+static char cm_ghost[] = "dm2_cmd_ghostit";
 static char *DM2_AC_Command[] = {
 	cm_nono,
 	cm_hide,
@@ -132,6 +136,7 @@ static char *DM2_AC_Command[] = {
 	cm_dec,
 	cm_opa,
 	cm_top,
+	cm_ghost,
 	""								//must use null string in end.
 };
 
@@ -203,6 +208,7 @@ char *Action_GetCmdFromIndex(int cmd)
 
 HWND LastReszieWin = NULL;
 HWND LastAlignWin = NULL;
+extern PGHOSTIT g_pgit;
 extern void AddHideWindow(HWND hWnd);
 void Do_Action_Command(HWND hWnd, DWORD Info)
 {
@@ -307,6 +313,19 @@ void Do_Action_Command(HWND hWnd, DWORD Info)
 				else
 					SetWindowPos(hWnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE|SWP_NOSIZE);
 			}
+		}
+		else if(lstrcmpi(pCMD, cm_ghost) == 0)
+		{
+			char szName[MAX_PATH];
+			GetClassName(hWnd, szName, MAX_PATH);
+			if(lstrcmp(szName, "Shell_TrayWnd") == 0) //if not the taskbar
+				return;
+			GetWindowText(hWnd, szName, MAX_PATH);
+			if(lstrcmp(szName, "Program Manager") == 0) //if not the desktop
+				return;
+			
+			if(AddGhostIt(hWnd, &g_pgit) == FALSE)
+				RemoveHWNDGhostIt(hWnd, &g_pgit);
 		}
 		else
 		{
