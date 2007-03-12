@@ -181,6 +181,8 @@ BOOL TryCloseWindow(HWND hwnd)
 {
 	//if window close have prompt
 	SetForegroundWindow(hwnd);
+
+	SendMessage(hwnd, WM_SYSCOMMAND, SC_CLOSE, 0);
 	SendMessage(hwnd, WM_CLOSE, 0, 0);
 	
 	//determines window handle
